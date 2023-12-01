@@ -244,19 +244,19 @@ impl<B: Backend> Lstm<B> {
         }
 
         // f(orget)g(ate) tensors
-        let biased_fg_input_sum = self.gate_product(&input_t, &hidden_state, forget_gate);
+        let biased_fg_input_sum = self.gate_product(&input_t, hidden_state, forget_gate);
         let forget_values = activation::sigmoid(biased_fg_input_sum); // to multiply with cell state
 
         // i(nput)g(ate) tensors
-        let biased_ig_input_sum = self.gate_product(&input_t, &hidden_state, input_gate);
+        let biased_ig_input_sum = self.gate_product(&input_t, hidden_state, input_gate);
         let add_values = activation::sigmoid(biased_ig_input_sum);
 
         // o(output)g(ate) tensors
-        let biased_og_input_sum = self.gate_product(&input_t, &hidden_state, output_gate);
+        let biased_og_input_sum = self.gate_product(&input_t, hidden_state, output_gate);
         let output_values = activation::sigmoid(biased_og_input_sum);
 
         // c(ell)g(ate) tensors
-        let biased_cg_input_sum = self.gate_product(&input_t, &hidden_state, cell_gate);
+        let biased_cg_input_sum = self.gate_product(&input_t, hidden_state, cell_gate);
         let candidate_cell_values = biased_cg_input_sum.tanh();
 
         *cell_state = forget_values * cell_state.clone() + add_values * candidate_cell_values;
