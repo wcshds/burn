@@ -147,11 +147,13 @@ impl<B: Backend> Lstm<B> {
             1
         };
 
+        let device = batched_input.clone().device();
+
         let [batch_size, seq_length, _] = batched_input.shape().dims;
         let mut batched_cell_state =
-            Tensor::zeros([batch_size, seq_length, self.d_hidden * num_directions]);
+            Tensor::zeros_device([batch_size, seq_length, self.d_hidden * num_directions], &device);
         let mut batched_hidden_state =
-            Tensor::zeros([batch_size, seq_length, self.d_hidden * num_directions]);
+            Tensor::zeros_device([batch_size, seq_length, self.d_hidden * num_directions], &device);
 
         let (mut cell_state, mut hidden_state) = match state.clone() {
             Some((cell_state, hidden_state)) => (
@@ -163,8 +165,8 @@ impl<B: Backend> Lstm<B> {
                     .squeeze(0),
             ),
             None => (
-                Tensor::zeros([batch_size, self.d_hidden]),
-                Tensor::zeros([batch_size, self.d_hidden]),
+                Tensor::zeros_device([batch_size, self.d_hidden], &device),
+                Tensor::zeros_device([batch_size, self.d_hidden], &device),
             ),
         };
 
@@ -194,8 +196,8 @@ impl<B: Backend> Lstm<B> {
                         .squeeze(0),
                 ),
                 None => (
-                    Tensor::zeros([batch_size, self.d_hidden]),
-                    Tensor::zeros([batch_size, self.d_hidden]),
+                    Tensor::zeros_device([batch_size, self.d_hidden], &device),
+                    Tensor::zeros_device([batch_size, self.d_hidden], &device),
                 ),
             };
 
