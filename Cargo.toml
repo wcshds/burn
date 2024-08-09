@@ -141,8 +141,8 @@ sysinfo = "0.30.13"
 systemstat = "0.2.3"
 
 ### For the main burn branch. ###
-cubecl = { git = "https://github.com/wcshds/cubecl", branch = "fix-float-precision", default-features = false }
-cubecl-common = { git = "https://github.com/wcshds/cubecl", branch = "fix-float-precision", default-features = false }
+cubecl = { git = "https://github.com/wcshds/cubecl", branch = "merge-all-patch", default-features = false }
+cubecl-common = { git = "https://github.com/wcshds/cubecl", branch = "merge-all-patch", default-features = false }
 ### For local development. ###
 # cubecl = { path = "../cubecl/crates/cubecl" }
 # cubecl-common = { path = "../cubecl/crates/cubecl-common" }
