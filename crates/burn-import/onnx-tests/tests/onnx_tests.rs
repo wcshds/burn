@@ -43,16 +43,21 @@ include_models!(
     flatten,
     gather,
     gather_scalar,
+    gather_shape,
     gather_elements,
     gelu,
     global_avr_pool,
     greater,
+    greater_scalar,
     greater_or_equal,
+    greater_or_equal_scalar,
     hard_sigmoid,
     layer_norm,
     leaky_relu,
     less,
+    less_scalar,
     less_or_equal,
+    less_or_equal_scalar,
     linear,
     log,
     log_softmax,
@@ -455,6 +460,21 @@ mod tests {
         let index = Tensor::<Backend, 1, Int>::from_ints([0, 2], &device);
         let output = model.forward(input, index);
         let expected = TensorData::from([[1f32, 3.], [4., 6.]]);
+
+        assert_eq!(output.to_data(), expected);
+    }
+
+    #[test]
+    fn gather_shape() {
+        let model: gather_shape::Model<Backend> = gather_shape::Model::default();
+
+        let device = Default::default();
+
+        let input = Tensor::<Backend, 2>::from_floats([[1., 2., 3.], [4., 5., 6.]], &device);
+        // shape(input) = [2, 3]
+        let index = Tensor::<Backend, 1, Int>::from_ints([0], &device);
+        let output = model.forward(input, index);
+        let expected = TensorData::from([2i64]);
 
         assert_eq!(output.to_data(), expected);
     }
@@ -1643,6 +1663,20 @@ mod tests {
     }
 
     #[test]
+    fn greater_scalar() {
+        let device = Default::default();
+        let model: greater_scalar::Model<Backend> = greater_scalar::Model::new(&device);
+
+        let input1 = Tensor::<Backend, 2>::from_floats([[1.0, 4.0, 9.0, 0.5]], &device);
+        let input2 = 1.0;
+
+        let output = model.forward(input1, input2);
+        let expected = TensorData::from([[false, true, true, false]]);
+
+        output.to_data().assert_eq(&expected, true);
+    }
+
+    #[test]
     fn less() {
         let device = Default::default();
         let model: less::Model<Backend> = less::Model::new(&device);
@@ -1652,6 +1686,20 @@ mod tests {
 
         let output = model.forward(input1, input2);
         let expected = TensorData::from([[false, true, false, false]]);
+
+        output.to_data().assert_eq(&expected, true);
+    }
+
+    #[test]
+    fn less_scalar() {
+        let device = Default::default();
+        let model: less_scalar::Model<Backend> = less_scalar::Model::new(&device);
+
+        let input1 = Tensor::<Backend, 2>::from_floats([[1.0, 4.0, 9.0, 0.5]], &device);
+        let input2 = 1.0;
+
+        let output = model.forward(input1, input2);
+        let expected = TensorData::from([[false, false, false, true]]);
 
         output.to_data().assert_eq(&expected, true);
     }
@@ -1671,6 +1719,21 @@ mod tests {
     }
 
     #[test]
+    fn greater_or_equal_scalar() {
+        let device = Default::default();
+        let model: greater_or_equal_scalar::Model<Backend> =
+            greater_or_equal_scalar::Model::new(&device);
+
+        let input1 = Tensor::<Backend, 2>::from_floats([[1.0, 4.0, 9.0, 0.5]], &device);
+        let input2 = 1.0;
+
+        let output = model.forward(input1, input2);
+        let expected = TensorData::from([[true, true, true, false]]);
+
+        output.to_data().assert_eq(&expected, true);
+    }
+
+    #[test]
     fn less_or_equal() {
         let device = Default::default();
         let model: less_or_equal::Model<Backend> = less_or_equal::Model::new(&device);
@@ -1680,6 +1743,20 @@ mod tests {
 
         let output = model.forward(input1, input2);
         let expected = TensorData::from([[true, true, false, false]]);
+
+        output.to_data().assert_eq(&expected, true);
+    }
+
+    #[test]
+    fn less_or_equal_scalar() {
+        let device = Default::default();
+        let model: less_or_equal_scalar::Model<Backend> = less_or_equal_scalar::Model::new(&device);
+
+        let input1 = Tensor::<Backend, 2>::from_floats([[1.0, 4.0, 9.0, 0.5]], &device);
+        let input2 = 1.0;
+
+        let output = model.forward(input1, input2);
+        let expected = TensorData::from([[true, false, false, true]]);
 
         output.to_data().assert_eq(&expected, true);
     }
